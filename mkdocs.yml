@@ -1,0 +1,41 @@
+site_name: FastLimiter
+site_description: A rate limiting extension for FastAPI
+site_url: https://astronuttt.github.io/fastlimiter
+
+theme:
+  name: 'material'
+  palette:
+    primary: 'green'
+    accent: 'orange'
+  logo: 'img/icon-white.svg'
+  favicon: 'img/favicon.png'
+
+repo_name: astronuttt/fastlimiter
+repo_url: https://github.com/astronuttt/fastlimiter
+
+nav:
+  - FastLimiter: 'index.md'
+  - API Refrence:
+    - Limiter: 'api-refrence/limiter.md'
+    - Middleware: 'api-refrence/middleware.md'
+    - Decorators: 'api-refrence/decorators.md'
+    - Dependencies: 'api-refrence/dependencies.md'
+    - Functions: 'api-refrence/functions.md'
+    - Exceptions: 'api-refrence/exceptions.md'
+    - Utils: 'api-refrence/utils.md'
+
+
+plugins:
+  search:
+    lang: en
+  mkdocstrings:
+    handlers:
+      python:
+        options:
+          allow_inspection: true
+          docstring_style: google
+          show_signature_annotations: true
+          separate_signature: true
+          unwrap_annotated: true
+          signature_crossrefs: true
+          line_length: 60
