@@ -5,20 +5,28 @@ site_url: https://astronuttt.github.io/fastlimiter
 theme:
   name: 'material'
   palette:
-    primary: 'green'
-    accent: 'orange'
-  logo: 'img/icon-white.svg'
-  favicon: 'img/favicon.png'
+    scheme: slate
+  features:
+    - navigation.instant
+    - navigation.instant.progress
+    - navigation.footer
+  logo: 'img/icon.webp'
+  favicon: 'img/icon.webp'
 
 repo_name: astronuttt/fastlimiter
 repo_url: https://github.com/astronuttt/fastlimiter
 
 nav:
   - FastLimiter: 'index.md'
+  - User Guide:
+    - Why?: 'user-guide/why.md'
+    - Getting started: 'user-guide/getting-started.md'
+    - Complex Limits:
+      - Filters: 'user-guide/filters.md'
+      - Keys: 'user-guide/keys.md'
   - API Refrence:
     - Limiter: 'api-refrence/limiter.md'
     - Middleware: 'api-refrence/middleware.md'
-    - Decorators: 'api-refrence/decorators.md'
     - Dependencies: 'api-refrence/dependencies.md'
     - Functions: 'api-refrence/functions.md'
     - Exceptions: 'api-refrence/exceptions.md'
@@ -32,10 +40,15 @@ plugins:
     handlers:
       python:
         options:
-          allow_inspection: true
+          # allow_inspection: true
           docstring_style: google
           show_signature_annotations: true
           separate_signature: true
           unwrap_annotated: true
           signature_crossrefs: true
           line_length: 60
+          show_source: false
+          show_if_no_docstring: true
+          members_order: source
+          members: true
+          show_submodules: false
