@@ -15,7 +15,7 @@ if TYPE_CHECKING:
 # FastAPI dependency
 class BaseLimiterDependency:
     """
-    BaseLimiterDependency
+    This dpendency will be injected into the `APIRoute` object and does the actual 'limiting' job.
     """
 
     def __init__(
@@ -24,6 +24,13 @@ class BaseLimiterDependency:
         key: str | None = None,
         no_hit_status_codes: list[int] | None = None,
     ) -> None:
+        """BaseLimiterDependency
+
+        Args:
+            limit_value (str | RateLimitItem): a string like "5/minute" or a `RateLimitItem` object
+            key (str | None, optional): A key that can be shared between multiple routes for grouping them, or seperating them.
+            no_hit_status_codes (list[int] | None, optional): the response statuses that won't be count as a hit on the limiter.
+        """
         if isinstance(limit_value, str):
             self.item = parse(limit_value)
         else:
@@ -37,6 +44,19 @@ class BaseLimiterDependency:
         response: Response,
         extra_keys: list[str] | None = None,
     ) -> Any:
+        """The actual callable that FastAPI call and checks for rate-limiting
+
+        Args:
+            request (Request): request object from FastAPI
+            response (Response): response object from FastAPI
+            extra_keys (list[str] | None, optional): extra keys other than those provided by the middleware as identifiers for a rate-limit item
+
+        Raises:
+            RateLimitExceeded: when the rate limit exceeds the allowed value
+
+        Returns:
+            Any:
+        """
         try:
             limiter: "RateLimitingMiddleware" = request.state.limiter
         except AttributeError:
@@ -52,6 +72,15 @@ class BaseLimiterDependency:
     async def _build_key(
         self, key_funcs: Sequence[CallableOrAwaitableCallable], request: Request
     ) -> list[str]:
+        """Build an identifier for a rate-limit item
+
+        Args:
+            key_funcs (Sequence[CallableOrAwaitableCallable]): a list of keys passed to the `RateLimitingMiddleware` and the dependency itself. these keys will form a identifier for a limit item.
+            request (Request): this has to be changed so keys will also work with Depends
+
+        Returns:
+            list[str]: a list containing string keys from the provided callables
+        """
         _keys = [
             f(request) if not asyncio.iscoroutinefunction(f) else await f(request)
             for f in key_funcs
@@ -82,6 +111,11 @@ class _InjectedLimiterDependency(BaseLimiterDependency):
     def apply_dependencies(
         cls, dependencies: CallableFilter | list[CallableFilter]
     ) -> Type["_InjectedLimiterDependency"]:
+        """Applies the dependencies provided by the caller to a modified version of this class and returns it
+
+        Returns:
+            Type[_injectedLimiterDependency]:
+        """
         dependencies = (
             [dependencies] if not isinstance(dependencies, list) else dependencies
         )
