@@ -40,3 +40,11 @@ def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Re
     )
     # inject retry_after header into Response
     return response
+
+
+_default_429_response = {
+    "model": TooManyRequests,
+    "headers": {
+        "retry_after": {"description": "Retry after n seconds", "type": "integer"}
+    },
+}

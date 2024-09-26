@@ -1,13 +1,15 @@
 import asyncio
 import inspect
-from typing import Any, Sequence, Type
+from typing import TYPE_CHECKING, Any, Sequence, Type
 
 from fastapi import Depends, Request, Response
 from limits import RateLimitItem, parse
 
 from .exceptions import RateLimitExceeded
-from .limiter import FastAPIRateLimiter
 from .types import CallableFilter, CallableOrAwaitableCallable
+
+if TYPE_CHECKING:
+    from .middleware import RateLimitingMiddleware
 
 
 # FastAPI dependency
@@ -36,7 +38,7 @@ class BaseLimiterDependency:
         extra_keys: list[str] | None = None,
     ) -> Any:
         try:
-            limiter: FastAPIRateLimiter = request.state.limiter
+            limiter: "RateLimitingMiddleware" = request.state.limiter
         except AttributeError:
             return
         keys = await self._build_key(limiter.key_funcs, request=request)

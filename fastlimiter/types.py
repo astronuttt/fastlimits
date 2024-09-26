@@ -6,6 +6,7 @@ from pydantic import BaseModel
 SupportsRoutes: TypeAlias = APIRouter | FastAPI
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
+
 StrOrCallableStr: TypeAlias = str | Callable[..., str]
 
 CallableOrAwaitableCallable: TypeAlias = Callable[..., str | Awaitable[str]]

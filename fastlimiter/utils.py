@@ -1,4 +1,4 @@
-from typing import Any, Callable
+from typing import Any, Callable, Generator
 
 from fastapi.routing import APIRoute
 from limits import RateLimitItem
@@ -7,14 +7,15 @@ from pydantic import create_model
 from .types import ModelT, SupportsRoutes
 
 
+def get_api_routes(router: SupportsRoutes) -> Generator[APIRoute]:
+    yield from (r for r in router.routes if isinstance(r, APIRoute))
+
+
 def find_api_route(router: SupportsRoutes, func: Callable[..., Any]) -> APIRoute | None:
     """Find the APIRoute object from the APIRouter.routes or FastAPI.routes"""
-    route = None
-    for r in router.routes:
-        if isinstance(r, APIRoute) and getattr(r, "endpoint", None) == func:
-            route = r
-            break
-    return route
+    for r in get_api_routes(router):
+        if getattr(r, "endpoint", None) == func:
+            return r
 
 
 def create_response_model(
