@@ -19,6 +19,7 @@ class RateLimitExceeded(HTTPException):
         headers: dict[str, str] | None = None,
     ) -> None:
         self.limit = limit
+        # TODO: calculate retry_after and add it to the headers
         super().__init__(
             status_code=status_code,
             detail=detail if detail else str(limit),
@@ -28,18 +29,6 @@ class RateLimitExceeded(HTTPException):
 
 class TooManyRequests(BaseModel):
     detail: str = "Rate limit exceeded: {x} per {y} {granularity}"
-
-
-def _rate_limit_exceeded_handler(request: Request, exc: RateLimitExceeded) -> Response:
-    """
-    Build a simple JSON response that includes the details of the rate limit
-    that was hit. If no limit is hit, the countdown is added to headers.
-    """
-    response = JSONResponse(
-        {"error": f"Rate limit exceeded: {exc.detail}"}, status_code=exc.status_code
-    )
-    # inject retry_after header into Response
-    return response
 
 
 _default_429_response = {

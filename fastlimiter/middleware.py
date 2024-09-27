@@ -1,14 +1,12 @@
 from typing import TYPE_CHECKING, Awaitable, Callable
 
 from fastapi import Request, Response
-from limits.aio.storage import MemoryStorage
-from limits.aio.strategies import FixedWindowRateLimiter, RateLimiter
-from limits.storage import StorageTypes
+from limits.aio.strategies import RateLimiter
 from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
 from .functions import get_remote_address
-from .types import CallableFilter, CallableOrAwaitableCallable, SupportsRoutes
+from .types import CallableOrAwaitableCallable
 
 if TYPE_CHECKING:
     from .dependencies import BaseLimiterDependency

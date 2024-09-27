@@ -1,12 +1,13 @@
 import asyncio
 import inspect
-from typing import TYPE_CHECKING, Any, Sequence, Type
+from typing import TYPE_CHECKING, Any, Self, Sequence, Type
 
 from fastapi import Depends, Request, Response
 from limits import RateLimitItem, parse
 
 from .exceptions import RateLimitExceeded
-from .types import CallableFilter, CallableOrAwaitableCallable
+from .types import CallableFilter, CallableKey, CallableOrAwaitableCallable
+from .utils import ensure_list, fncopy
 
 if TYPE_CHECKING:
     from .middleware import RateLimitingMiddleware
@@ -42,34 +43,33 @@ class BaseLimiterDependency:
         self,
         request: Request,
         response: Response,
-        extra_keys: list[str] | None = None,
-    ) -> Any:
+        keys: list[str] | None = None,
+    ) -> None:
         """The actual callable that FastAPI call and checks for rate-limiting
 
         Args:
             request (Request): request object from FastAPI
             response (Response): response object from FastAPI
-            extra_keys (list[str] | None, optional): extra keys other than those provided by the middleware as identifiers for a rate-limit item
+            keys (list[str] | None, optional): extra keys other than those provided by the middleware as identifiers for a rate-limit item
 
         Raises:
             RateLimitExceeded: when the rate limit exceeds the allowed value
-
-        Returns:
-            Any:
         """
         try:
             limiter: "RateLimitingMiddleware" = request.state.limiter
         except AttributeError:
             return
-        keys = await self._build_key(limiter.key_funcs, request=request)
-        if extra_keys:
-            keys.extend(extra_keys)
-        if not await limiter.strategy.test(self.item, *keys):
-            raise RateLimitExceeded(limit=self.item)
+        built_keys = await self._build_key(limiter.key_funcs, request=request)
+        if keys:
+            built_keys.extend(keys)
+        if not await limiter.strategy.test(self.item, *built_keys):
+            raise RateLimitExceeded(
+                limit=self.item, detail=f"Rate limit exceeded: {self.item}"
+            )
         request.state.limit = self
-        request.state.limit_keys = keys
+        request.state.limit_keys = built_keys
 
-    async def _build_key(
+    async def _build_key(  # TODO: make key_funcs be dependencies as well?
         self, key_funcs: Sequence[CallableOrAwaitableCallable], request: Request
     ) -> list[str]:
         """Build an identifier for a rate-limit item
@@ -90,6 +90,14 @@ class BaseLimiterDependency:
         return _keys  # type: ignore
 
 
+def filters_resolver(**filters: bool) -> dict[str, bool]:
+    return filters
+
+
+def keys_resolver(**keys: str) -> list[str]:
+    return list(keys.values())
+
+
 class _InjectedLimiterDependency(BaseLimiterDependency):
     """
     A modified version of this class will be injected into the
@@ -101,35 +109,71 @@ class _InjectedLimiterDependency(BaseLimiterDependency):
         self,
         request: Request,
         response: Response,
-        extra_keys: list[str] | None = None,
-        **filters: bool,
+        keys: list[str],
+        filters: dict[str, bool],
     ) -> Any:
         if all(filters.values()):
-            return await super(type(self), self).__call__(request, response, extra_keys)
+            return await super(type(self), self).__call__(request, response, keys)
 
     @classmethod
     def apply_dependencies(
-        cls, dependencies: CallableFilter | list[CallableFilter]
-    ) -> Type["_InjectedLimiterDependency"]:
-        """Applies the dependencies provided by the caller to a modified version of this class and returns it
+        cls,
+        keys: CallableKey | list[CallableKey] | None,
+        filters: CallableFilter | list[CallableFilter] | None,
+    ) -> Type[Self]:
+        """Applies the filters and keys provided by the caller to a modified version of this class and returns it
 
         Returns:
             Type[_injectedLimiterDependency]:
         """
-        dependencies = (
-            [dependencies] if not isinstance(dependencies, list) else dependencies
-        )
+        if not keys and not filters:
+            return cls  # do not change anything
+
         dep_class = type(
             cls.__name__,
             cls.__bases__,
             dict(cls.__dict__),
         )
+
+        # create a copy of resovler functions and change their signature to add keys and filters as dependencies for FastAPI to pick up
+        _keys_resolver = keys_resolver
+        _filters_resolver = filters_resolver
+        keys = ensure_list(keys)
+        filters = ensure_list(filters)
+        _keys_resolver = fncopy(
+            keys_resolver,
+            sig=tuple(
+                inspect.Parameter(
+                    k.__name__, inspect.Parameter.KEYWORD_ONLY, default=Depends(k)
+                )
+                for k in keys
+            ),
+        )
+        _filters_resolver = fncopy(
+            filters_resolver,
+            sig=tuple(
+                inspect.Parameter(
+                    f.__name__, inspect.Parameter.KEYWORD_ONLY, default=Depends(f)
+                )
+                for f in filters
+            ),
+        )
+
         sig = inspect.signature(dep_class.__call__)
-        sig_params = tuple(sig.parameters.values())[:-1] + tuple(
-            inspect.Parameter(
-                f.__name__, inspect.Parameter.KEYWORD_ONLY, default=Depends(f)
+
+        sig_params = tuple(sig.parameters.values())[:-2] + tuple(
+            (
+                inspect.Parameter(
+                    "keys",
+                    inspect.Parameter.KEYWORD_ONLY,
+                    default=Depends(_keys_resolver),
+                ),
+                inspect.Parameter(
+                    "filters",
+                    inspect.Parameter.KEYWORD_ONLY,
+                    default=Depends(_filters_resolver),
+                ),
             )
-            for f in dependencies
         )
         dep_class.__call__.__signature__ = sig.replace(parameters=sig_params)
         return dep_class  # type: ignore

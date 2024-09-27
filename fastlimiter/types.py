@@ -11,4 +11,5 @@ StrOrCallableStr: TypeAlias = str | Callable[..., str]
 
 CallableOrAwaitableCallable: TypeAlias = Callable[..., str | Awaitable[str]]
 
+CallableKey: TypeAlias = Callable[..., str | Awaitable[str]]
 CallableFilter: TypeAlias = Callable[..., bool | Awaitable[bool]]
