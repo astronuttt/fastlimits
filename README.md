@@ -39,9 +39,10 @@ As for the `FastAPI` side it Injects a dependency into the `APIRoute` object and
 
 Some of the ideas for this library comes from two great libraries that were created before this:
 
-SlowApi: https://github.com/laurents/slowapi
+SlowApi: <a href="https://github.com/laurents/slowapi" target="_blank">https://github.com/laurents/slowapi</a>
 
-fastapi-limiter: https://github.com/long2ice/fastapi-limiter
+fastapi-limiter: <a href="https://github.com/long2ice/fastapi-limiter" target="_blank">https://github.com/long2ice/fastapi-limiter</a>
+
 
 These are two great libraries, but each of them lack some functionality, so I decided to extend them and create FastLimiter.
 

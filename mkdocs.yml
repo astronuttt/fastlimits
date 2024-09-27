@@ -10,6 +10,8 @@ theme:
     - navigation.instant
     - navigation.instant.progress
     - navigation.footer
+    - content.code.copy
+
   logo: 'img/icon.webp'
   favicon: 'img/icon.webp'
 
@@ -20,10 +22,11 @@ nav:
   - FastLimiter: 'index.md'
   - User Guide:
     - Why?: 'user-guide/why.md'
+    - Installation: 'user-guide/install.md'
     - Getting started: 'user-guide/getting-started.md'
-    - Complex Limits:
-      - Filters: 'user-guide/filters.md'
-      - Keys: 'user-guide/keys.md'
+    - Middlewares: 'user-guide/middlewares.md'
+    - Filters: 'user-guide/filters.md'
+    - Keys: 'user-guide/keys.md'
   - API Refrence:
     - Limiter: 'api-refrence/limiter.md'
     - Middleware: 'api-refrence/middleware.md'
@@ -31,6 +34,7 @@ nav:
     - Functions: 'api-refrence/functions.md'
     - Exceptions: 'api-refrence/exceptions.md'
     - Utils: 'api-refrence/utils.md'
+    - Types: 'api-refrence/types.md'
 
 
 plugins:
@@ -40,15 +44,23 @@ plugins:
     handlers:
       python:
         options:
-          # allow_inspection: true
-          docstring_style: google
+          allow_inspection: true
           show_signature_annotations: true
           separate_signature: true
           unwrap_annotated: true
           signature_crossrefs: true
-          line_length: 60
-          show_source: false
           show_if_no_docstring: true
           members_order: source
           members: true
-          show_submodules: false
+
+markdown_extensions:
+  - pymdownx.highlight:
+      anchor_linenums: true
+      line_spans: __span
+      pygments_lang_class: true
+  - pymdownx.inlinehilite
+  - pymdownx.snippets
+  - pymdownx.superfences
+  - admonition
+  - pymdownx.details
+  - pymdownx.superfences
