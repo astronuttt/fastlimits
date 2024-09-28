@@ -6,7 +6,8 @@ from starlette.middleware.base import BaseHTTPMiddleware
 from starlette.types import ASGIApp
 
 from .functions import get_remote_address
-from .types import CallableOrAwaitableCallable
+from .types import CallableMiddlewareKey
+from .utils import ensure_list
 
 if TYPE_CHECKING:
     from .dependencies import BaseLimiterDependency
@@ -17,10 +18,12 @@ class RateLimitingMiddleware(BaseHTTPMiddleware):
         self,
         app: ASGIApp,
         strategy: RateLimiter,
-        key_funcs: list[CallableOrAwaitableCallable] | None = None,
+        keys: CallableMiddlewareKey | list[CallableMiddlewareKey] | None = None,
     ) -> None:
         self.strategy = strategy
-        self.key_funcs = key_funcs if key_funcs else [get_remote_address]
+        self.keys: list[CallableMiddlewareKey] = (
+            ensure_list(keys) if keys else ensure_list(get_remote_address)
+        )
         super().__init__(app)
 
     async def dispatch(

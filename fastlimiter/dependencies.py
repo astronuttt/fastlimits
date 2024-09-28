@@ -1,12 +1,12 @@
 import asyncio
 import inspect
-from typing import TYPE_CHECKING, Any, Self, Sequence, Type
+from typing import TYPE_CHECKING, Any, Self, Type
 
 from fastapi import Depends, Request, Response
 from limits import RateLimitItem, parse
 
 from .exceptions import RateLimitExceeded
-from .types import CallableFilter, CallableKey, CallableOrAwaitableCallable
+from .types import CallableFilter, CallableMiddlewareKey, StrOrCallableKey
 from .utils import ensure_list, fncopy
 
 if TYPE_CHECKING:
@@ -22,7 +22,6 @@ class BaseLimiterDependency:
     def __init__(
         self,
         limit_value: str | RateLimitItem,
-        key: str | None = None,
         no_hit_status_codes: list[int] | None = None,
     ) -> None:
         """BaseLimiterDependency
@@ -36,7 +35,6 @@ class BaseLimiterDependency:
             self.item = parse(limit_value)
         else:
             self.item = limit_value
-        self.key = key
         self.no_hit_status_codes = no_hit_status_codes if no_hit_status_codes else []
 
     async def __call__(
@@ -59,9 +57,9 @@ class BaseLimiterDependency:
             limiter: "RateLimitingMiddleware" = request.state.limiter
         except AttributeError:
             return
-        built_keys = await self._build_key(limiter.key_funcs, request=request)
-        if keys:
-            built_keys.extend(keys)
+        built_keys = await self._build_key(
+            limiter.keys, request, keys
+        )  # resolve middleware level keys and append endpoint level keys
         if not await limiter.strategy.test(self.item, *built_keys):
             raise RateLimitExceeded(
                 limit=self.item, detail=f"Rate limit exceeded: {self.item}"
@@ -69,24 +67,28 @@ class BaseLimiterDependency:
         request.state.limit = self
         request.state.limit_keys = built_keys
 
-    async def _build_key(  # TODO: make key_funcs be dependencies as well?
-        self, key_funcs: Sequence[CallableOrAwaitableCallable], request: Request
+    async def _build_key(
+        self,
+        keys: list[CallableMiddlewareKey],
+        request: Request,
+        extra_keys: list[str] | None = None,
     ) -> list[str]:
         """Build an identifier for a rate-limit item
 
         Args:
             key_funcs (Sequence[CallableOrAwaitableCallable]): a list of keys passed to the `RateLimitingMiddleware` and the dependency itself. these keys will form a identifier for a limit item.
             request (Request): this has to be changed so keys will also work with Depends
+            extra_keys (list[str] | None, optional): endpoint level keys resolved as strings
 
         Returns:
             list[str]: a list containing string keys from the provided callables
         """
         _keys = [
             f(request) if not asyncio.iscoroutinefunction(f) else await f(request)
-            for f in key_funcs
+            for f in keys
         ]
-        if self.key:
-            _keys.append(self.key)
+        if extra_keys:
+            _keys.extend(extra_keys)
         return _keys  # type: ignore
 
 
@@ -94,8 +96,8 @@ def filters_resolver(**filters: bool) -> dict[str, bool]:
     return filters
 
 
-def keys_resolver(**keys: str) -> list[str]:
-    return list(keys.values())
+def keys_resolver(*keys: str) -> list[str]:
+    return list(keys)
 
 
 class _InjectedLimiterDependency(BaseLimiterDependency):
@@ -118,7 +120,7 @@ class _InjectedLimiterDependency(BaseLimiterDependency):
     @classmethod
     def apply_dependencies(
         cls,
-        keys: CallableKey | list[CallableKey] | None,
+        keys: StrOrCallableKey | list[StrOrCallableKey] | None,
         filters: CallableFilter | list[CallableFilter] | None,
     ) -> Type[Self]:
         """Applies the filters and keys provided by the caller to a modified version of this class and returns it
@@ -144,8 +146,10 @@ class _InjectedLimiterDependency(BaseLimiterDependency):
             keys_resolver,
             sig=tuple(
                 inspect.Parameter(
-                    k.__name__, inspect.Parameter.KEYWORD_ONLY, default=Depends(k)
+                    k.__name__, inspect.Parameter.POSITIONAL_ONLY, default=Depends(k)
                 )
+                if not isinstance(k, str)
+                else inspect.Parameter(k, inspect.Parameter.POSITIONAL_ONLY, default=k)
                 for k in keys
             ),
         )

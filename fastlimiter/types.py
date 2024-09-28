@@ -1,15 +1,15 @@
 from typing import Awaitable, Callable, TypeAlias, TypeVar
 
-from fastapi import APIRouter, FastAPI
+from fastapi import APIRouter, FastAPI, Request
 from pydantic import BaseModel
 
 SupportsRoutes: TypeAlias = APIRouter | FastAPI
 
 ModelT = TypeVar("ModelT", bound=BaseModel)
 
-StrOrCallableStr: TypeAlias = str | Callable[..., str]
 
-CallableOrAwaitableCallable: TypeAlias = Callable[..., str | Awaitable[str]]
+CallableMiddlewareKey: TypeAlias = Callable[[Request], str | Awaitable[str]]
 
-CallableKey: TypeAlias = Callable[..., str | Awaitable[str]]
+StrOrCallableKey: TypeAlias = str | Callable[..., str | Awaitable[str]]
+
 CallableFilter: TypeAlias = Callable[..., bool | Awaitable[bool]]
