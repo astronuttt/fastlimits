@@ -80,6 +80,10 @@ and thats it! now our limit only works when the user is not an `admin`.
     Do not worry about the use of `get_current_user` if you used it multiple times like our example here, `FastAPI` will cache dependencies and `get_current_user` will be called only once!
 
 
+!!! note "More about filters"
+    You can learn more about Filters [here](../filters)
+
+
 
 now we can go one step forward and add more conditions to our limits, group our limits together and much more.
 
@@ -143,6 +147,11 @@ so now the keys to both of this endpoints will be `["127.0.0.1", "/", "items"]` 
 !!! warning
 
     be carefull when doing this! the limit on both of this endpoints must match, for example here both are `"5/minute"`, the library does not constraint you from doing otherwise but unwanted conditions might occur!
+
+
+
+!!! note "More about keys"
+    You can learn more about Keys [here](../keys)
 
 
 
