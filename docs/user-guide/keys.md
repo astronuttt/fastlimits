@@ -24,7 +24,7 @@ for example we use the user's ip address here (`"127.0.0.1"`) as the first part 
 i sould note that there is no constraint here and you can use almost anything in the key functions. we used the `path` (`"/"`) for the second part here.
 
 
-we can define middleware level keys when we setup our middleware, there are some pre-defined keys in the [Functions](../api-refrence/functions) but you can create your own functions as well and use them.
+we can define middleware level keys when we setup our middleware, there are some pre-defined keys in the [Functions](../api-refrence/functions.md) but you can create your own functions as well and use them.
 
 
 so lets create our own key function and use that in our middleware.
@@ -92,7 +92,7 @@ in this key function, we check for `X-Real-IP` header, if that does not exist, w
 
 
 !!! note "Default key functions"
-    by default the function applied is [get_remote_address](../../api-refrence/functions/#fastlimiter.functions.get_remote_address).
+    by default the function applied is [get_remote_address](../api-refrence/functions.md/#fastlimiter.functions.get_remote_address).
 
 
 !!! warning

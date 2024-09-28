@@ -81,7 +81,7 @@ and thats it! now our limit only works when the user is not an `admin`.
 
 
 !!! note "More about filters"
-    You can learn more about Filters [here](../filters)
+    You can learn more about Filters [here](filters.md)
 
 
 
@@ -151,7 +151,7 @@ so now the keys to both of this endpoints will be `["127.0.0.1", "/", "items"]` 
 
 
 !!! note "More about keys"
-    You can learn more about Keys [here](../keys)
+    You can learn more about Keys [here](keys.md)
 
 
 
