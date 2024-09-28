@@ -28,7 +28,6 @@ class BaseLimiterDependency:
 
         Args:
             limit_value (str | RateLimitItem): a string like "5/minute" or a `RateLimitItem` object
-            key (str | None, optional): A key that can be shared between multiple routes for grouping them, or seperating them.
             no_hit_status_codes (list[int] | None, optional): the response statuses that won't be count as a hit on the limiter.
         """
         if isinstance(limit_value, str):
@@ -53,6 +52,7 @@ class BaseLimiterDependency:
         Raises:
             RateLimitExceeded: when the rate limit exceeds the allowed value
         """
+        # TODO: do not check other filters if one accepted
         try:
             limiter: "RateLimitingMiddleware" = request.state.limiter
         except AttributeError:
