@@ -12,7 +12,6 @@ First of all, we have to setup our middleware, we also need some stuff from our 
 
 
 ```py
-
 from fastapi import FastAPI
 
 from limits.aio.storage import MemoryStorage
@@ -48,8 +47,16 @@ The `limits` library supports multiple storage and strategies to use, we used th
 for the strategy, we used `FixedWindowRateLimiter` that has the least overhead and meets the needs of most applications. but you are free to use anything that `limits` library supports!
 
 
+!!! warning "sync or async"
+    `limits` library supports both sync and async storage backends, but it will be best to use the async version.
+    so you sould import modules from `limits.aio` for example `from limits.aio.storage import MemoryStorage`.
+    and if you happen to use the sync version. FastAPI will handle everything as it's documented <a href="https://fastapi.tiangolo.com/tutorial/dependencies/#to-async-or-not-to-async" target="_blank">here</a>.
+
+
+
 !!! note "More Storages"
     If you want to know more about different storage backends supported you can refer to limits documentation <a href="https://limits.readthedocs.io/en/latest/storage.html" target="_blank">here</a>.
+
 
 
 !!! note "More Strategies"

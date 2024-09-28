@@ -25,8 +25,8 @@ nav:
     - Installation: 'user-guide/install.md'
     - Getting started: 'user-guide/getting-started.md'
     - Middlewares: 'user-guide/middlewares.md'
-    - Filters: 'user-guide/filters.md'
     - Keys: 'user-guide/keys.md'
+    - Filters: 'user-guide/filters.md'
   - API Refrence:
     - Limiter: 'api-refrence/limiter.md'
     - Middleware: 'api-refrence/middleware.md'

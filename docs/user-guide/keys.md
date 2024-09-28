@@ -29,22 +29,18 @@ we can define middleware level keys when we setup our middleware, there are some
 
 so lets create our own key function and use that in our middleware.
 
-the only thing that matters when creating key functions is that the do not accept any arbitrary arguments, but just like `FastAPI` dependencies, you can define a `Depends` on them and they will be resolved by `FastAPI` automatically. 
+the only thing that matters when creating a custom key function is that it must get only one argument, and that argument is the `Request` object passed to it from the middleware. you can use any sync or async function based on your context.
 
-in addition you can use the `Request` and `Response` objects on the key functions and those also will be filled automatically.
 
 all key fucntions must return a string, that string will be used as a key.
 
 
 ```py
-async def get_user_id(user: User = Depends(get_current_user)) -> str:
-    return str(user.id)
+def get_remote_port(request: Request) -> str:
+    return request.client.port
 ```
 
-and thats it! we now have a key function that distinguishes different users by their `user.id`!
-
-!!! warning
-    You shuld consider this that when you use a function like this example, the user has to be logged in, and it might need to query database to retrive `user` object and then get the `id` from it. these all might add overhead to your application. so be careful when creating key functions.
+and thats it! we now have a key function that distinguishes different users by their `ip address`!
 
 
 now, if we want to use our key function, is as simple as this:
@@ -59,11 +55,6 @@ from limits.aio.strategies import FixedWindowRateLimiter
 from fastlimiter import RateLimitingMiddleware
 
 
-# you can define your key functions anywhere
-async def get_user_id(user: User = Depends(get_current_user)) -> str:
-    return str(user.id)
-
-
 app = FastAPI()
 
 limiter = FixedWindowRateLimiter(storage=MemoryStorage())
@@ -71,19 +62,37 @@ limiter = FixedWindowRateLimiter(storage=MemoryStorage())
 app.add_middleware(
     RateLimitingMiddleware,
     limiter=limiter,
-    keys=[get_user_id] # just add the key function you want to this list, be careful not to add paranthesis
+    keys=[get_remote_port] # just add the key function you want to this list, be careful not to add paranthesis at the end of function names
 )
 ```
 
 now if we check our limit item keys, instead of ip address from before, we get something like this:
 
 
-`["1", "get_items"]` or `["2", "create_items"]` where `"1"` and `"2"` are different user ids.
+`["55561", "get_items"]` or `["43541", "create_items"]` where `"55561"` and `"43541"` are different ports that requests came from.
+
+
+this is dumb, right? usgin the port here is not useful at all, but lets see another example.
+
+did you notice the ip from before was `127.0.0.1` and not a real ip address?
+
+sometimes when our application is behind a reverse proxy, a cdn or something like that, we do not see the real ip of the user, 
+     but sometimes when they forward the requests, they include the real ip of the user in a header.
+
+guess what? we can use that header value as key!
+
+
+```py
+def get_real_ip(request: Request) -> str:
+    return request.headers.get("X-Real-IP", None) or get_remote_address(request)
+```
+
+in this key function, we check for `X-Real-IP` header, if that does not exist, we fallback to the default `get_remote_address` function.
 
 
 
 !!! note "Default key functions"
-    by default the two functions applied are [get_remote_address](../../api-refrence/functions/#fastlimiter.functions.get_remote_address) and [get_path](../../api-refrence/functions/#fastlimiter.functions.get_path).
+    by default the function applied is [get_remote_address](../../api-refrence/functions/#fastlimiter.functions.get_remote_address).
 
 
 !!! warning
@@ -97,7 +106,7 @@ If you notice, the second part in our limit items from previous example did not 
 
 well that is because those are endpoint level keys. and by default the endpoint's function name will be used as a key for each item.
 
-for example if have an endpoint defined like this:
+for example if we have an endpoint defined like this:
 
 ```py
 @app.get("/")
@@ -116,10 +125,11 @@ we do that by providing our key function to the `limit` decorator.
 
 ### Key functions
 
-the rules are the same for all key functions, wether they are middleware level or endpoint level.
+
+key functions are, deep down, `dependencies`, so you can use `Depends` in them!
 
 
-we can use the function that we used for the middleware level key:
+we can write an endpoint level key function like this:
 
 ```py
 def get_user_id(user: User = Depends(get_current_user)) -> str:
@@ -134,17 +144,13 @@ async def get_items(...):
 
 now let's take a look at our limit key:
 
-`["1", "1"]`
-
-did you notice what's wrong with this right? the first `"1"` is the middleware level key that we added before. and the second one will be our endpoint level key.
+`["127.0.0.1", "1"]`
 
 
 the `override_default_keys` argument will remove default endpoint level keys and add only our provided keys to the limit item.
 
-if we was to pass False, for example `override_default_keys=False`, our limit key would be `["1", "get_items", "1"]`.
+if we was to pass False, for example `override_default_keys=False`, our limit key would be `["127.0.0.1", "get_items", "1"]`.
 
-
-and if we take another look, the second `"1"` is redundant right? so be careful what you use for generating keys.
 
 
 ### Key strings
@@ -158,7 +164,7 @@ async def get_items(...):
     ...
 ```
 
-and now if check our our limit key, it will be something like `["1", "some_string"]`.
+and now if we check our our limit key, it will be something like `["127.0.0.1", "some_string"]`.
 
 where is this useful? well one useful usage of this will be when you want to create limit two or more endpoints together.
 
@@ -175,7 +181,7 @@ async def create_items(...):
     ...
 ```
 
-now we bound these two endpoints together. if the user calls the first one, 2 times, and second one 3 times, we have 5 in total and our limit would be filled and they can't use any of these two endpoints anymore.
+now we bound these two endpoints together. if the user calls the first endpoint, 2 times, and second one 3 times, we have 5 in total and our limit would be filled and they can't use any of these two endpoints anymore.
 
 
 ### Key functions + Key strings
@@ -190,4 +196,4 @@ You also have the option to combine strings and functions together to create mor
 !!! note "The order matters"
     be careful when adding multiple keys because the order of keys matter!
 
-    `["1", "first", "second"]` and `["1", "second", "first"]` are two completly different items.
+    `["127.0.0.1", "first", "second"]` and `["127.0.0.1", "second", "first"]` are two completly different items.
