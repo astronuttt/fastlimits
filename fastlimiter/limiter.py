@@ -151,7 +151,7 @@ def limit(
 
     # check to see if this function was used as a decorator or not
     if ctx := inspect.stack()[1].code_context:
-        if not ctx[0].startswith("@"):
+        if not ctx[0].strip().startswith("@"):
             item = parse(limit_string)
             for route in get_api_routes(router):
                 apply_limit(
