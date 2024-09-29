@@ -662,6 +662,25 @@
 <p>You can install this library just by running:</p>
 <p><code>pip install fastlimiter</code></p>
 <p>Then you can start using it! </p>
+<p>As we mentioned before, FastLimiter supports multiple storage backends courtesy of limist library.</p>
+<p>You can read more about different flavours of limits storage backend in their <a href="https://limits.readthedocs.io/en/stable/installation.html">Installation manual</a>.</p>
+<p>But... you can take a shortcut and install those flavours directly:</p>
+<div class="tabbed-set tabbed-alternate" data-tabs="1:4"><input checked="checked" id="__tabbed_1_1" name="__tabbed_1" type="radio" /><input id="__tabbed_1_2" name="__tabbed_1" type="radio" /><input id="__tabbed_1_3" name="__tabbed_1" type="radio" /><input id="__tabbed_1_4" name="__tabbed_1" type="radio" /><div class="tabbed-labels"><label for="__tabbed_1_1">Async Redis</label><label for="__tabbed_1_2">Async Memcached</label><label for="__tabbed_1_3">Async Mongodb</label><label for="__tabbed_1_4">Async Etcd</label></div>
+<div class="tabbed-content">
+<div class="tabbed-block">
+<p><code>pip install "fastlimiter[async-redis]"</code></p>
+</div>
+<div class="tabbed-block">
+<p><code>pip install "fastlimiter[async-memcached]"</code></p>
+</div>
+<div class="tabbed-block">
+<p><code>pip install "fastlimiter[async-mongodb]"</code></p>
+</div>
+<div class="tabbed-block">
+<p><code>pip install "fastlimiter[async-etcd]"</code></p>
+</div>
+</div>
+</div>
 <p>Before you dive in, take a look at the next few chapters as they walk you in on how to get started.</p>
 
 
