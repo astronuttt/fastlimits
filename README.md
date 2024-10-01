@@ -1,5 +1,5 @@
 <p align="center">
-<em>FastLimiter is a rate limiting extension/middleware for <a href="https://github.com/fastapi/fastapi" target="_blank">FastAPI</a> applications powered by <a href="https://github.com/alisaifee/limits" target="_blank">limits</a>.</em>
+[WIP] <em>FastLimiter is a rate limiting extension/middleware for <a href="https://github.com/fastapi/fastapi" target="_blank">FastAPI</a> applications powered by <a href="https://github.com/alisaifee/limits" target="_blank">limits</a>.</em>
 </p>
 
 ---
