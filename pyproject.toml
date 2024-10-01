@@ -41,7 +41,8 @@ classifiers = [
     "Topic :: Internet :: WWW/HTTP",
 ]
 dependencies = [
-    "limits>=3.13.0"
+    "limits>=3.13.0",
+    "fastapi>=0.115.0,<1.0.0",
 ]
 
 [project.urls]
@@ -51,13 +52,18 @@ Repository = "https://github.com/astronuttt/fastlimiter"
 Issues = "https://github.com/astronuttt/fastlimiter/issues"
 
 [project.optional-dependencies]
-
-standard = [
+async-redis = [
+    "limits[async-redis]>=3.13.0"
 ]
-
-all = [
+async-memcached = [
+    "limits[async-memcached]>=3.13.0"
 ]
-
+async-mongodb = [
+    "limits[async-mongodb]>=3.13.0"
+]
+async-etcd = [
+    "limtis[async-etcd]>=3.13.0"
+]
 
 [tool.pdm]
 version = { source = "file", path = "fastlimiter/__init__.py" }
@@ -93,7 +99,7 @@ strict = true
 addopts = [
   "--strict-config",
   "--strict-markers",
-  "--ignore=docs_src",
+  "--ignore=docs",
 ]
 xfail_strict = true
 junit_family = "xunit2"
