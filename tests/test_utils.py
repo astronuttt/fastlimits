@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 
-from fastlimiter import limit, utils
+from fastlimiter import utils
 
 
 def test_find_api_route():
