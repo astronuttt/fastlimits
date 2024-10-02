@@ -1,4 +1,4 @@
-from fastapi import Depends, FastAPI
+from fastapi import Depends, FastAPI, Header
 from fastapi.routing import APIRoute
 from limits.aio.storage import MemoryStorage
 from limits.aio.strategies import FixedWindowRateLimiter
@@ -20,12 +20,12 @@ def build_app() -> tuple[FastAPI, list[APIRoute]]:
     @limit(app, "5/minute")
     @app.get("/")
     async def _get():
-        pass
+        return
 
-    @limit(app, "5/minute", keys="some_key")
+    @limit(app, "1/second", keys="some_key")
     @app.post("/")
     async def _post():
-        pass
+        return
 
     def some_dependency_function():
         return "huh a key"
@@ -33,32 +33,45 @@ def build_app() -> tuple[FastAPI, list[APIRoute]]:
     def some_funky_dependency() -> str:
         return "hellooo"
 
-    async def some_filter_function(text: str = Depends(some_funky_dependency)) -> bool:
-        if text == "hellooo":
+    async def some_filter_function(
+        text: str = Depends(some_funky_dependency),
+        x_some_header: str = Header("not-some-header"),
+    ) -> bool:
+        if x_some_header == "some-header":
             return True
         return False
 
     @limit(
         app,
-        "5/minute",
+        "3/minute",
         keys="some_key",
         filters=[some_filter_function, some_funky_dependency],
         override_default_keys=True,
     )
-    @app.get("/")
+    @app.get("/other")
     async def _other_get():
-        pass
+        return
 
     @limit(
         app,
-        "5/minute",
+        "3/minute",
+        keys="some_key",
+        override_default_keys=True,
+    )
+    @app.get("/shared")
+    async def _shared():
+        return
+
+    @limit(
+        app,
+        "3/minute",
         keys=["some_key", some_dependency_function],
         filters=some_filter_function,
         override_default_keys=True,
     )
-    @app.get("/")
+    @app.get("/second")
     async def _other_second_get():
-        pass
+        return
 
     # return app, [_get, _post, _other_get, _other_second_get]
     return app, list(get_api_routes(app))
