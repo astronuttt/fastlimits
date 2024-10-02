@@ -96,8 +96,8 @@ def filters_resolver(**filters: bool) -> dict[str, bool]:
     return filters
 
 
-def keys_resolver(*keys: str) -> list[str]:
-    return list(keys)
+def keys_resolver(**keys: str) -> list[str]:
+    return list(keys.values())
 
 
 class _InjectedLimiterDependency(BaseLimiterDependency):
@@ -146,10 +146,10 @@ class _InjectedLimiterDependency(BaseLimiterDependency):
             keys_resolver,
             sig=tuple(
                 inspect.Parameter(
-                    k.__name__, inspect.Parameter.POSITIONAL_ONLY, default=Depends(k)
+                    k.__name__, inspect.Parameter.KEYWORD_ONLY, default=Depends(k)
                 )
                 if not isinstance(k, str)
-                else inspect.Parameter(k, inspect.Parameter.POSITIONAL_ONLY, default=k)
+                else inspect.Parameter(k, inspect.Parameter.KEYWORD_ONLY, default=k)
                 for k in keys
             ),
         )
