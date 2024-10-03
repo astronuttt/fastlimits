@@ -17,7 +17,7 @@ from fastapi import FastAPI
 from limits.aio.storage import MemoryStorage
 from limits.aio.strategies import FixedWindowRateLimiter
 
-from fastlimiter import RateLimitingMiddleware
+from fastlimits import RateLimitingMiddleware
 
 
 # create our fastapi app

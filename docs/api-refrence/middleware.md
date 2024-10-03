@@ -1,4 +1,4 @@
-::: fastlimiter.middleware
+::: fastlimits.middleware
     options:
         members:
          - RateLimitingMiddleware

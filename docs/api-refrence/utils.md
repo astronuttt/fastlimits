@@ -1,4 +1,4 @@
-::: fastlimiter.utils
+::: fastlimits.utils
     options:
         members:
             - get_api_routes

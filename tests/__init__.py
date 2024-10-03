@@ -5,8 +5,8 @@ from fastapi.routing import APIRoute
 from limits.aio.storage import MemoryStorage
 from limits.aio.strategies import FixedWindowRateLimiter
 
-from fastlimiter import RateLimitingMiddleware, limit
-from fastlimiter.utils import get_api_routes
+from fastlimits import RateLimitingMiddleware, limit
+from fastlimits.utils import get_api_routes
 
 
 def build_app() -> Tuple[FastAPI, List[APIRoute]]:

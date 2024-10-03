@@ -1,4 +1,4 @@
-::: fastlimiter.limiter
+::: fastlimits.limiter
     options:
         members:
             - limit

@@ -2,11 +2,11 @@
 
 
 def test_import():
-    import fastlimiter
+    import fastlimits
 
 
 def test_import_modules():
-    from fastlimiter import (
+    from fastlimits import (
         BaseLimiterDependency,
         RateLimitExceeded,
         RateLimitingMiddleware,

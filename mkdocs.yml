@@ -1,6 +1,6 @@
-site_name: FastLimiter
+site_name: FastLimits
 site_description: A rate limiting extension for FastAPI
-site_url: https://astronuttt.github.io/fastlimiter
+site_url: https://astronuttt.github.io/fastlimits
 
 theme:
   name: 'material'
@@ -15,11 +15,11 @@ theme:
   logo: 'img/icon.webp'
   favicon: 'img/icon.webp'
 
-repo_name: astronuttt/fastlimiter
-repo_url: https://github.com/astronuttt/fastlimiter
+repo_name: astronuttt/fastlimits
+repo_url: https://github.com/astronuttt/fastlimits
 
 nav:
-  - FastLimiter: 'index.md'
+  - FastLimits: 'index.md'
   - User Guide:
     - Why?: 'user-guide/why.md'
     - Installation: 'user-guide/install.md'

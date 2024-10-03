@@ -1,4 +1,4 @@
-::: fastlimiter.functions
+::: fastlimits.functions
     options:
         members:
             - get_remote_address

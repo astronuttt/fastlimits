@@ -3,9 +3,9 @@ requires = ["pdm-backend"]
 build-backend = "pdm.backend"
 
 [project]
-name = "fastlimiter"
+name = "fastlimits"
 dynamic = ["version"]
-description = "FastLimiter is a rate-limiter extensions/middleware for FastAPI applications"
+description = "FastLimits is a rate-limiter extensions/middleware for FastAPI applications"
 readme = "README.md"
 requires-python = ">=3.8"
 authors = [
@@ -46,10 +46,10 @@ dependencies = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/astronuttt/fastlimiter"
-Documentation = "https://astronuttt.github.io/fastlimiter/"
-Repository = "https://github.com/astronuttt/fastlimiter"
-Issues = "https://github.com/astronuttt/fastlimiter/issues"
+Homepage = "https://github.com/astronuttt/fastlimits"
+Documentation = "https://astronuttt.github.io/fastlimits/"
+Repository = "https://github.com/astronuttt/fastlimits"
+Issues = "https://github.com/astronuttt/fastlimits/issues"
 
 [project.optional-dependencies]
 async-redis = [
@@ -66,7 +66,7 @@ async-etcd = [
 ]
 
 [tool.pdm]
-version = { source = "file", path = "fastlimiter/__init__.py" }
+version = { source = "file", path = "fastlimits/__init__.py" }
 distribution = true
 
 [tool.pdm.build]

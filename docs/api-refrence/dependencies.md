@@ -1,5 +1,5 @@
 
-::: fastlimiter.dependencies
+::: fastlimits.dependencies
     options:
         members:
             - BaseLimiterDependency

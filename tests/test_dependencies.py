@@ -3,7 +3,7 @@ from typing import List, Optional
 
 from fastapi.dependencies.models import Dependant
 
-from fastlimiter import dependencies
+from fastlimits import dependencies
 
 from . import build_app
 

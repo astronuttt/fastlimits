@@ -1,1 +1,1 @@
-::: fastlimiter.exceptions
+::: fastlimits.exceptions

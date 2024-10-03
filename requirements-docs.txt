@@ -2,5 +2,5 @@
 
 mkdocs==1.6.1
 mkdocs-material==9.5.39
-mkdocstrings==0.26.1
+mkdocstrings[python]==0.26.1
 black==24.8.0

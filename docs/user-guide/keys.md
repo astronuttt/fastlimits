@@ -52,7 +52,7 @@ from fastapi import FastAPI
 from limits.aio.storage import MemoryStorage
 from limits.aio.strategies import FixedWindowRateLimiter
 
-from fastlimiter import RateLimitingMiddleware
+from fastlimits import RateLimitingMiddleware
 
 
 app = FastAPI()
@@ -92,7 +92,7 @@ in this key function, we check for `X-Real-IP` header, if that does not exist, w
 
 
 !!! note "Default key functions"
-    by default the function applied is [get_remote_address](../api-refrence/functions.md/#fastlimiter.functions.get_remote_address).
+    by default the function applied is [get_remote_address](../api-refrence/functions.md/#fastlimits.functions.get_remote_address).
 
 
 !!! warning

@@ -1,12 +1,12 @@
 <p align="center">
-[WIP] <em>FastLimiter is a rate limiting extension/middleware for <a href="https://github.com/fastapi/fastapi" target="_blank">FastAPI</a> applications powered by <a href="https://github.com/alisaifee/limits" target="_blank">limits</a>.</em>
+[WIP] <em>FastLimits is a rate limiting extension/middleware for <a href="https://github.com/fastapi/fastapi" target="_blank">FastAPI</a> applications powered by <a href="https://github.com/alisaifee/limits" target="_blank">limits</a>.</em>
 </p>
 
 ---
 
-**Documentation**: <a href="https://astronuttt.github.io/fastlimiter" target="_blank">https://astronuttt.github.io/fastlimiter</a>
+**Documentation**: <a href="https://astronuttt.github.io/fastlimits" target="_blank">https://astronuttt.github.io/fastlimits</a>
 
-**Source Code**: <a href="https://github.com/astronuttt/fastlimiter" target="_blank">https://github.com/astronuttt/fastlimiter</a>
+**Source Code**: <a href="https://github.com/astronuttt/fastlimits" target="_blank">https://github.com/astronuttt/fastlimits</a>
 
 
 ## Features
@@ -44,7 +44,7 @@ SlowApi: <a href="https://github.com/laurents/slowapi" target="_blank">https://g
 fastapi-limiter: <a href="https://github.com/long2ice/fastapi-limiter" target="_blank">https://github.com/long2ice/fastapi-limiter</a>
 
 
-These are two great libraries, but each of them lack some functionality, so I decided to extend them and create FastLimiter.
+These are two great libraries, but each of them lack some functionality, so I decided to extend them and create FastLimits.
 
 
 ## Quick Start
@@ -61,7 +61,7 @@ from fastapi import FastAPI
 from limits.aio.storage import MemoryStorage
 from limits.aio.strategies import FixedWindowRateLimiter
 
-from fastlimiter import RateLimitingMiddleware, limit
+from fastlimits import RateLimitingMiddleware, limit
 
 
 app = FastAPI()
@@ -81,7 +81,7 @@ async def items(q: int | None = None):
 And thats it! now users can call the GET 'items' route only 5 times per minute.
 
 
-For more usage please refer to the documentation at <a href="https://astronuttt.github.io/fastlimiter" target="_blank">https://astronuttt.github.io/fastlimiter</a>
+For more usage please refer to the documentation at <a href="https://astronuttt.github.io/fastlimits" target="_blank">https://astronuttt.github.io/fastlimits</a>
 
 
 ---
