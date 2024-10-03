@@ -41,6 +41,6 @@ jobs:
           key: ${{ runner.os }}-python-${{ env.pythonLocation }}-${{ matrix.pydantic-version }}-${{ hashFiles('pyproject.toml', 'requirements-tests.txt', 'requirements-docs-tests.txt') }}-test-v08
       - name: Install Dependencies
         if: steps.cache.outputs.cache-hit != 'true'
-        run: pip install -r requirements.txt
+        run: pip install -r requirements-test.txt
       - name: Test
         run: pytest
