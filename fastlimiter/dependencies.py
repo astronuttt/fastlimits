@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 import asyncio
 import inspect
-from typing import TYPE_CHECKING, Any, Self, Type
+from typing import TYPE_CHECKING, Any, Dict, List, Optional, Type, Union
 
 from fastapi import Depends, Request, Response
 from limits import RateLimitItem, parse
@@ -23,14 +21,14 @@ class BaseLimiterDependency:
 
     def __init__(
         self,
-        limit_value: str | RateLimitItem,
-        no_hit_status_codes: list[int] | None = None,
+        limit_value: Union[str, RateLimitItem],
+        no_hit_status_codes: Optional[List[int]] = None,
     ) -> None:
         """BaseLimiterDependency
 
         Args:
-            limit_value (str | RateLimitItem): a string like "5/minute" or a `RateLimitItem` object
-            no_hit_status_codes (list[int] | None, optional): the response statuses that won't be count as a hit on the limiter.
+            limit_value (Union[str, RateLimitItem]): a string like "5/minute" or a `RateLimitItem` object
+            no_hit_status_codes (Optional[List[int]]): the response statuses that won't be count as a hit on the limiter.
         """
         if isinstance(limit_value, str):
             self.item = parse(limit_value)
@@ -42,14 +40,14 @@ class BaseLimiterDependency:
         self,
         request: Request,
         response: Response,
-        keys: list[str] | None = None,
+        keys: Optional[List[str]] = None,
     ) -> None:
         """The actual callable that FastAPI call and checks for rate-limiting
 
         Args:
             request (Request): request object from FastAPI
             response (Response): response object from FastAPI
-            keys (list[str] | None, optional): extra keys other than those provided by the middleware as identifiers for a rate-limit item
+            keys (Optional[List[str]]): extra keys other than those provided by the middleware as identifiers for a rate-limit item
 
         Raises:
             RateLimitExceeded: when the rate limit exceeds the allowed value
@@ -71,19 +69,19 @@ class BaseLimiterDependency:
 
     async def _build_key(
         self,
-        keys: list[CallableMiddlewareKey],
+        keys: List[CallableMiddlewareKey],
         request: Request,
-        extra_keys: list[str] | None = None,
-    ) -> list[str]:
+        extra_keys: Optional[List[str]] = None,
+    ) -> List[str]:
         """Build an identifier for a rate-limit item
 
         Args:
             key_funcs (Sequence[CallableOrAwaitableCallable]): a list of keys passed to the `RateLimitingMiddleware` and the dependency itself. these keys will form a identifier for a limit item.
             request (Request): this has to be changed so keys will also work with Depends
-            extra_keys (list[str] | None, optional): endpoint level keys resolved as strings
+            extra_keys (Optional[ist[str]]): endpoint level keys resolved as strings
 
         Returns:
-            list[str]: a list containing string keys from the provided callables
+            List[str]: a list containing string keys from the provided callables
         """
         _keys = [
             f(request) if not asyncio.iscoroutinefunction(f) else await f(request)
@@ -94,11 +92,11 @@ class BaseLimiterDependency:
         return _keys  # type: ignore
 
 
-def filters_resolver(**filters: bool) -> dict[str, bool]:
+def filters_resolver(**filters: bool) -> Dict[str, bool]:
     return filters
 
 
-def keys_resolver(**keys: str) -> list[str]:
+def keys_resolver(**keys: str) -> List[str]:
     return list(keys.values())
 
 
@@ -113,8 +111,8 @@ class _InjectedLimiterDependency(BaseLimiterDependency):
         self,
         request: Request,
         response: Response,
-        keys: list[str],
-        filters: dict[str, bool],
+        keys: List[str],
+        filters: Dict[str, bool],
     ) -> Any:
         if all(filters.values()):
             return await super(type(self), self).__call__(request, response, keys)
@@ -122,9 +120,9 @@ class _InjectedLimiterDependency(BaseLimiterDependency):
     @classmethod
     def apply_dependencies(
         cls,
-        keys: StrOrCallableKey | list[StrOrCallableKey] | None,
-        filters: CallableFilter | list[CallableFilter] | None,
-    ) -> Type[Self]:
+        keys: Optional[Union[StrOrCallableKey, List[StrOrCallableKey]]],
+        filters: Optional[Union[CallableFilter, List[CallableFilter]]],
+    ) -> Type["_InjectedLimiterDependency"]:
         """Applies the filters and keys provided by the caller to a modified version of this class and returns it
 
         Returns:

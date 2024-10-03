@@ -1,4 +1,4 @@
-from __future__ import annotations
+from typing import Dict, Optional
 
 from fastapi import HTTPException, status
 from limits import RateLimitItem
@@ -16,8 +16,8 @@ class RateLimitExceeded(HTTPException):
         self,
         limit: RateLimitItem,
         status_code: int = status.HTTP_429_TOO_MANY_REQUESTS,
-        detail: str | None = None,
-        headers: dict[str, str] | None = None,
+        detail: Optional[str] = None,
+        headers: Optional[Dict[str, str]] = None,
     ) -> None:
         self.limit = limit
         # TODO: calculate retry_after and add it to the headers

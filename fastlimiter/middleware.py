@@ -1,6 +1,4 @@
-from __future__ import annotations
-
-from typing import TYPE_CHECKING, Awaitable, Callable
+from typing import TYPE_CHECKING, Awaitable, Callable, Dict, List, Optional, Union
 
 from fastapi import Request, Response
 from limits.aio.strategies import RateLimiter
@@ -20,7 +18,9 @@ class RateLimitingMiddleware(BaseHTTPMiddleware):
         self,
         app: ASGIApp,
         strategy: RateLimiter,
-        keys: CallableMiddlewareKey | list[CallableMiddlewareKey] | None = None,
+        keys: Optional[
+            Union[CallableMiddlewareKey, List[CallableMiddlewareKey]]
+        ] = None,
     ) -> None:
         self.strategy = strategy
         self.keys: list[CallableMiddlewareKey] = (

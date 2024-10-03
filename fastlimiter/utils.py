@@ -1,8 +1,6 @@
-from __future__ import annotations
-
 import inspect
 import types
-from typing import Any, Callable, Generator, TypeVar
+from typing import Any, Callable, Generator, List, Optional, Tuple, Type, TypeVar, Union
 
 from fastapi.routing import APIRoute
 from limits import RateLimitItem
@@ -26,7 +24,9 @@ def get_api_routes(router: SupportsRoutes) -> Generator[APIRoute, None, None]:
     yield from (r for r in router.routes if isinstance(r, APIRoute))
 
 
-def find_api_route(router: SupportsRoutes, func: Callable[..., Any]) -> APIRoute | None:
+def find_api_route(
+    router: SupportsRoutes, func: Callable[..., Any]
+) -> Optional[APIRoute]:
     """Find the APIRoute object from the APIRouter.routes or FastAPI.routes"""
     for r in get_api_routes(router):
         if getattr(r, "endpoint", None) == func:
@@ -34,10 +34,10 @@ def find_api_route(router: SupportsRoutes, func: Callable[..., Any]) -> APIRoute
 
 
 def create_response_model(
-    model: type[ModelT],
+    model: Type[ModelT],
     parsed_limit: RateLimitItem,
     show_limit_in_response_model: bool = False,
-) -> type[ModelT]:
+) -> Type[ModelT]:
     """
     Returns a copy of the model with the default value updated and placeholders filled.G
     """
@@ -58,7 +58,7 @@ def create_response_model(
 
 
 def fncopy(
-    func: Callable[..., R], sig: tuple[inspect.Parameter, ...]
+    func: Callable[..., R], sig: Tuple[inspect.Parameter, ...]
 ) -> Callable[..., R]:
     """creates a deepcopy of a function with the same code, globals, defaults, closures but slighlty different signature
 
@@ -81,7 +81,7 @@ def fncopy(
     return fn
 
 
-def ensure_list(value: P | list[P] | None) -> list[P]:
+def ensure_list(value: Optional[Union[P, List[P]]]) -> List[P]:
     """ensure the value is a list
 
     returns an empty list if value is None
