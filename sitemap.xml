@@ -1,63 +1,63 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/api-refrence/dependencies/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/api-refrence/dependencies/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/api-refrence/exceptions/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/api-refrence/exceptions/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/api-refrence/functions/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/api-refrence/functions/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/api-refrence/limiter/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/api-refrence/limiter/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/api-refrence/middleware/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/api-refrence/middleware/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/api-refrence/types/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/api-refrence/types/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/api-refrence/utils/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/api-refrence/utils/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/user-guide/examples/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/user-guide/examples/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/user-guide/filters/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/user-guide/filters/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/user-guide/getting-started/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/user-guide/getting-started/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/user-guide/install/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/user-guide/install/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/user-guide/keys/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/user-guide/keys/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/user-guide/middlewares/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/user-guide/middlewares/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
     <url>
-         <loc>https://astronuttt.github.io/fastlimiter/user-guide/why/</loc>
+         <loc>https://astronuttt.github.io/fastlimits/user-guide/why/</loc>
          <lastmod>2024-10-03</lastmod>
     </url>
 </urlset>
