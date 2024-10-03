@@ -1,3 +1,5 @@
+from typing import List, Tuple
+
 from fastapi import Depends, FastAPI, Header
 from fastapi.routing import APIRoute
 from limits.aio.storage import MemoryStorage
@@ -7,7 +9,7 @@ from fastlimiter import RateLimitingMiddleware, limit
 from fastlimiter.utils import get_api_routes
 
 
-def build_app() -> tuple[FastAPI, list[APIRoute]]:
+def build_app() -> Tuple[FastAPI, List[APIRoute]]:
     app = FastAPI()
 
     limiter = FixedWindowRateLimiter(storage=MemoryStorage())

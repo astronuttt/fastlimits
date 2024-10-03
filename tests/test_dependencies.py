@@ -1,4 +1,5 @@
 import inspect
+from typing import List, Optional
 
 from fastapi.dependencies.models import Dependant
 
@@ -7,7 +8,7 @@ from fastlimiter import dependencies
 from . import build_app
 
 
-def get_limit_dependency(_deps: list[Dependant]) -> Dependant | None:
+def get_limit_dependency(_deps: List[Dependant]) -> Optional[Dependant]:
     for dep in _deps:
         if issubclass(type(dep.call), dependencies.BaseLimiterDependency):
             return dep
