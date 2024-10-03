@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 from typing import Awaitable, Callable, TypeAlias, TypeVar
 
 from fastapi import APIRouter, FastAPI, Request

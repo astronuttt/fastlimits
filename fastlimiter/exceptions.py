@@ -1,5 +1,6 @@
-from fastapi import HTTPException, Request, Response, status
-from fastapi.responses import JSONResponse
+from __future__ import annotations
+
+from fastapi import HTTPException, status
 from limits import RateLimitItem
 from pydantic import BaseModel
 

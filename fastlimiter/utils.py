@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 import inspect
 import types
 from typing import Any, Callable, Generator, TypeVar
